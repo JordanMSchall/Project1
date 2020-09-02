@@ -87,7 +87,14 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from game import Directions
+    n = Directions.NORTH
+    s = Directions.SOUTH
+    w = Directions.WEST
+    e = Directions.EAST
+    # simple test
+    return [s, s, w, s, w, w, s, w]
+    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
