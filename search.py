@@ -72,39 +72,103 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+
 def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
 
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
+    frontier = util.Stack()
+    reached = []
+    path = []
+    startState = problem.getStartState()
+    newNode = util.Node(startState, path)
 
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
+    if problem.isGoalState(newNode.state):
+        return path
 
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
-    "*** YOUR CODE HERE ***"
-    from game import Directions
-    n = Directions.NORTH
-    s = Directions.SOUTH
-    w = Directions.WEST
-    e = Directions.EAST
-    # simple test
-    return [s, s, w, s, w, w, s, w]
-    #util.raiseNotDefined()
+    frontier.push(newNode)
+
+    while not frontier.isEmpty():
+        node = frontier.pop()
+        reached.append(node.state)
+
+        if problem.isGoalState(node.state):
+            return node.path
+
+        stateSuccessors = problem.getSuccessors(node.state)
+
+        if stateSuccessors:
+            for successor in stateSuccessors:
+                if successor[0] not in reached:
+                    newPath = node.path + [successor[1]]
+                    newNode = util.Node(successor[0], newPath)
+                    frontier.push(newNode)
+
+    return []
+
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #Initiializing search
+    frontier = util.Queue()
+    reached = []
+    path = []
+    startState = problem.getStartState()
+    newNode = util.Node(startState, path)
+
+    if problem.isGoalState(newNode.state):
+        return path
+
+    frontier.push(newNode)
+
+    while not frontier.isEmpty():
+        node = frontier.pop()
+        reached.append(node.state)
+
+        if problem.isGoalState(node.state):
+            return node.path
+
+        stateSuccessors = problem.getSuccessors(node.state)
+
+        if stateSuccessors:
+            for successor in stateSuccessors:
+                state = successor[0]
+                if state not in reached and state not in ( node.state for node in frontier.list ):
+                    newPath = node.path + [successor[1]]
+                    newNode = util.Node(successor[0], newPath)
+                    frontier.push(newNode)
+
+    return []
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+     #Initiializing search
+    frontier = util.Queue()
+    reached = []
+    path = []
+    startState = problem.getStartState()
+    newNode = util.Node(startState, path)
+
+    if problem.isGoalState(newNode.state):
+        return path
+
+    frontier.push(newNode)
+
+    while not frontier.isEmpty():
+        node = frontier.pop()
+        reached.append(node.state)
+
+        if problem.isGoalState(node.state):
+            return node.path
+
+        stateSuccessors = problem.getSuccessors(node.state)
+
+        if stateSuccessors:
+            for successor in stateSuccessors:
+                state = successor[0]
+                if state not in reached and state not in ( node.state for node in frontier.list ):
+                    newPath = node.path + [successor[1]]
+                    newNode = util.Node(successor[0], newPath)
+                    frontier.push(newNode)
+
+    return []
+
 
 def nullHeuristic(state, problem=None):
     """

@@ -120,15 +120,16 @@ def setModuleName(module, filename):
 #from cStringIO import StringIO
 
 def loadModuleString(moduleSource):
+    return None
     # Below broken, imp doesn't believe its being passed a file:
     #    ValueError: load_module arg#2 should be a file or None
     #
     #f = StringIO(moduleCodeDict[k])
     #tmp = imp.load_module(k, f, k, (".py", "r", imp.PY_SOURCE))
-    tmp = imp.new_module(k)
-    exec(moduleCodeDict[k] in tmp.__dict__)
-    setModuleName(tmp, k)
-    return tmp
+    # tmp = imp.new_module(k)
+    # exec(moduleCodeDict[k] in tmp.__dict__)
+    # setModuleName(tmp, k)
+    # return tmp
 
 import py_compile
 

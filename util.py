@@ -167,6 +167,10 @@ class Queue:
         "Returns true if the queue is empty"
         return len(self.list) == 0
 
+    def __contains__(self, item):
+        with self.mutex:
+            return item in self.queue
+
 class PriorityQueue:
     """
       Implements a priority queue data structure. Each inserted item
@@ -670,3 +674,9 @@ def unmutePrint():
     sys.stdout = _ORIGINAL_STDOUT
     #sys.stderr = _ORIGINAL_STDERR
 
+class Node:
+    """This is a class to hold nodes for searching"""
+    def __init__(self, state, path, cost=0):
+        self.state = state
+        self.path = path
+        self.cost = cost
