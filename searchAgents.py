@@ -288,21 +288,18 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        # each index here represents a corresponding corner that has been visited in a given state
+        # it is assumed here that the problem does not start in a corner but if it did this
+        # would still work due to not being able to be in all four corners, this could lead to optimization
+        # problems....
+        self.cornerBooleans = [False, False, False, False]
 
     def getStartState(self):
-        """
-        Returns the start state (in your state space, not the full Pacman state
-        space)
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return ( self.startingPosition, self.cornerBooleans )
 
     def isGoalState(self, state):
-        """
-        Returns whether this search state is a goal state of the problem.
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # Check if all corners have been visited
+        return not False in state[1]
 
     def getSuccessors(self, state):
         """
@@ -314,20 +311,35 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
         successors = []
+
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
+            # get state position
+            x, y = state[0]
+            #create a list of corner booleans
+            stateCornerBooleans = list(state[1])
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            cost = 1
+            # check to ensure the next psoition is not actually the position of a wall
+            if not hitsWall:
+                # set successor pos
+                successorPos = (nextx,nexty)
+                # if the successorPos is actually a corner update the succesors corner booleans
+                if successorPos in self.corners:
+                    cornerIndex = self.corners.index(successorPos)
+                    stateCornerBooleans[cornerIndex] = True
+                    print(stateCornerBooleans)
 
-            "*** YOUR CODE HERE ***"
+                succesorState = (successorPos, stateCornerBooleans)
+                successors.append((succesorState,action,cost))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
+
 
     def getCostOfActions(self, actions):
         """
