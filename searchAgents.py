@@ -332,7 +332,7 @@ class CornersProblem(search.SearchProblem):
                 if successorPos in self.corners:
                     cornerIndex = self.corners.index(successorPos)
                     stateCornerBooleans[cornerIndex] = True
-                    print(stateCornerBooleans)
+                    #print(stateCornerBooleans)
 
                 succesorState = (successorPos, stateCornerBooleans)
                 successors.append((succesorState,action,cost))
