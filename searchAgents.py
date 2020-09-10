@@ -371,8 +371,37 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    # The plan here is to calculate distance to each corner
+    currentPos = state[0]
+    heuristicValue = 0
+    # assume already visited
+    cornerDistances = [0, 0, 0, 0]
+    if problem.isGoalState(state):
+        return heuristicValue
+
+    # The heuristic is based on the farthest distance of all corners in this state/position
+    for index, cornerBoolean in enumerate(state[1]):
+        if not cornerBoolean:
+            cornerPos = corners[index]
+            # This is Euclidean distance for one point
+            # return ( (currentPos[0] - cornerPos[0]) ** 2 + (currentPos[1] - cornerPos[1]) ** 2 ) ** 0.5
+            # this is manhattenDistance
+            # return abs(currentPos[0] - cornerPos[0]) + abs(currentPos[1] - cornerPos[1])
+            # Euclidean Distance Fails third check so I choose Manhatten
+            cornerDistance = abs(currentPos[0] - cornerPos[0]) + abs(currentPos[1] - cornerPos[1])
+            cornerDistances[index] = cornerDistance
+
+    # set heuristic as the farthest distance to avoid inadmissable cases
+    # another way of doing this is by summing up corners as the agent moves
+    # from False corner to False corner
+    heuristic = max(cornerDistances)
+
+    return heuristic
+
+
+
+
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
