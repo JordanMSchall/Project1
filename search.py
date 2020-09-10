@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -139,7 +140,7 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
      #Initiializing search
-    frontier = util.Queue()
+    frontier = util.PriorityQueue()
     reached = []
     path = []
     startState = problem.getStartState()
@@ -148,10 +149,15 @@ def uniformCostSearch(problem):
     if problem.isGoalState(newNode.state):
         return path
 
-    frontier.push(newNode)
+    frontier.push(newNode, 0)
+
+    # find the structure for a heap entry
+    # for entry in frontier.heap:
+    #     print(entry[2])
 
     while not frontier.isEmpty():
         node = frontier.pop()
+        # print(node)
         reached.append(node.state)
 
         if problem.isGoalState(node.state):
@@ -162,10 +168,17 @@ def uniformCostSearch(problem):
         if stateSuccessors:
             for successor in stateSuccessors:
                 state = successor[0]
-                if state not in reached and state not in ( node.state for node in frontier.list ):
+                if state not in reached:
                     newPath = node.path + [successor[1]]
-                    newNode = util.Node(successor[0], newPath)
-                    frontier.push(newNode)
+                    newCost = problem.getCostOfActions(newPath)
+                    if state not in ( (entry[2]).state for entry in frontier.heap ):
+                        newNode = util.Node(successor[0], newPath)
+                        frontier.push(newNode, newCost)
+                    if state in ( (entry[2]).state for entry in frontier.heap ):
+                        for heapEntry in frontier.heap:
+                            if (heapEntry[2]).state == state and newCost < problem.getCostOfActions(heapEntry[2].path):
+                                    (heapEntry[2]).path = newPath
+                                    frontier.update((heapEntry[2]), newCost)
 
     return []
 
@@ -177,10 +190,49 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+class PriorityFunction:
+    def __init__(self, heuristic, problem):
+        self.heuristic = heuristic
+        self.problem = problem
+
+    def priorityFunction(self, node):
+        return self.problem.getCostOfActions(node.path) + self.heuristic(node.state, self.problem)
+
+
+
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #Initiializing search
+    f = PriorityFunction(heuristic, problem)
+    frontier = util.PriorityQueueWithFunction(f.priorityFunction)
+    reached = []
+    path = []
+    startState = problem.getStartState()
+    newNode = util.Node(startState, path)
+
+    if problem.isGoalState(newNode.state):
+        return path
+
+    frontier.push(newNode)
+
+    while (not frontier.isEmpty()):
+        node = frontier.pop()
+
+        if problem.isGoalState(node.state):
+            return node.path
+
+        # expand the node
+        if node.state not in reached:
+            reached.append(node.state)
+            stateSuccessors = problem.getSuccessors(node.state)
+            if stateSuccessors:
+                for successor in stateSuccessors:
+                    state = successor[0]
+                    if state not in reached:
+                        newPath = node.path + [successor[1]]
+                        newNode = util.Node(successor[0], newPath)
+                        frontier.push(newNode)
+
+    return []
 
 
 # Abbreviations
@@ -188,3 +240,9 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+
+
+
+
+
+
