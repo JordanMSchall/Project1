@@ -461,6 +461,25 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
+# used in food heuristic
+def mazeDistance(point1, point2, gameState):
+    """
+    Returns the maze distance between any two points, using the search functions
+    you have already built. The gameState can be any game state -- Pacman's
+    position in that state is ignored.
+
+    Example usage: mazeDistance( (2,4), (5,6), gameState)
+
+    This might be a useful helper function for your ApproximateSearchAgent.
+    """
+    x1, y1 = point1
+    x2, y2 = point2
+    walls = gameState.getWalls()
+    assert not walls[x1][y1], 'point1 is a wall: ' + str(point1)
+    assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
+    prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
+    return len(search.bfs(prob))
+
 def foodHeuristic(state, problem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -498,13 +517,14 @@ def foodHeuristic(state, problem):
     if problem.isGoalState(state):
         return 0
 
-
     for rowIndex, row in enumerate(foodGrid):
         for colIndex, col in enumerate(row):
-            if not col:
-                manhattenDistance = abs(position[0] - rowIndex) + abs(position[1] - colIndex)
+            # if col == True that means there is in fact food there and we should find the distance
+            if col:
+                #manhattenDistance = abs(position[0] - rowIndex) + abs(position[1] - colIndex)
                 # m((position[0], position[1]), (rowIndex, colIndex), problem.getGameState())
-                foodDistances.append(manhattenDistance)
+                foodDistance = mazeDistance((position[0], position[1]), (rowIndex, colIndex), problem.startingGameState)
+                foodDistances.append(foodDistance)
 
     return max(foodDistances)
 
@@ -578,22 +598,3 @@ class AnyFoodSearchProblem(PositionSearchProblem):
                     if state == (rowIndex, colIndex):
                         return True
 
-
-
-def mazeDistance(point1, point2, gameState):
-    """
-    Returns the maze distance between any two points, using the search functions
-    you have already built. The gameState can be any game state -- Pacman's
-    position in that state is ignored.
-
-    Example usage: mazeDistance( (2,4), (5,6), gameState)
-
-    This might be a useful helper function for your ApproximateSearchAgent.
-    """
-    x1, y1 = point1
-    x2, y2 = point2
-    walls = gameState.getWalls()
-    assert not walls[x1][y1], 'point1 is a wall: ' + str(point1)
-    assert not walls[x2][y2], 'point2 is a wall: ' + str(point2)
-    prob = PositionSearchProblem(gameState, start=point1, goal=point2, warn=False, visualize=False)
-    return len(search.bfs(prob))
