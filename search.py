@@ -80,7 +80,7 @@ def depthFirstSearch(problem):
     reached = []
     path = []
     startState = problem.getStartState()
-    newNode = util.Node(startState, path)
+    newNode = Node(startState, path)
 
     if problem.isGoalState(newNode.state):
         return path
@@ -100,7 +100,7 @@ def depthFirstSearch(problem):
             for successor in stateSuccessors:
                 if successor[0] not in reached:
                     newPath = node.path + [successor[1]]
-                    newNode = util.Node(successor[0], newPath)
+                    newNode = Node(successor[0], newPath)
                     frontier.push(newNode)
 
     return []
@@ -112,7 +112,7 @@ def breadthFirstSearch(problem):
     reached = []
     path = []
     startState = problem.getStartState()
-    newNode = util.Node(startState, path)
+    newNode = Node(startState, path)
 
     if problem.isGoalState(newNode.state):
         return path
@@ -133,7 +133,7 @@ def breadthFirstSearch(problem):
                 state = successor[0]
                 if state not in reached and state not in ( node.state for node in frontier.list ):
                     newPath = node.path + [successor[1]]
-                    newNode = util.Node(successor[0], newPath)
+                    newNode = Node(successor[0], newPath)
                     frontier.push(newNode)
 
     return []
@@ -144,7 +144,7 @@ def uniformCostSearch(problem):
     reached = []
     path = []
     startState = problem.getStartState()
-    newNode = util.Node(startState, path)
+    newNode = Node(startState, path)
 
     if problem.isGoalState(newNode.state):
         return path
@@ -172,7 +172,7 @@ def uniformCostSearch(problem):
                     newPath = node.path + [successor[1]]
                     newCost = problem.getCostOfActions(newPath)
                     if state not in ( (entry[2]).state for entry in frontier.heap ):
-                        newNode = util.Node(successor[0], newPath)
+                        newNode = Node(successor[0], newPath)
                         frontier.push(newNode, newCost)
                     if state in ( (entry[2]).state for entry in frontier.heap ):
                         for heapEntry in frontier.heap:
@@ -207,7 +207,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     reached = []
     path = []
     startState = problem.getStartState()
-    newNode = util.Node(startState, path)
+    newNode = Node(startState, path)
 
     if problem.isGoalState(newNode.state):
         return path
@@ -229,7 +229,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     state = successor[0]
                     if state not in reached:
                         newPath = node.path + [successor[1]]
-                        newNode = util.Node(successor[0], newPath)
+                        newNode = Node(successor[0], newPath)
                         frontier.push(newNode)
 
     return []
@@ -244,5 +244,9 @@ ucs = uniformCostSearch
 
 
 
-
+class Node:
+    """This is a class to hold nodes for searching"""
+    def __init__(self, state, path):
+        self.state = state
+        self.path = path
 

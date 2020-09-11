@@ -675,8 +675,4 @@ def unmutePrint():
     sys.stdout = _ORIGINAL_STDOUT
     #sys.stderr = _ORIGINAL_STDERR
 
-class Node:
-    """This is a class to hold nodes for searching"""
-    def __init__(self, state, path):
-        self.state = state
-        self.path = path
+
