@@ -399,10 +399,6 @@ def cornersHeuristic(state, problem):
     return heuristic
 
 
-
-
-
-
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
     def __init__(self):
@@ -493,9 +489,24 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
+    # after evaluation foodGrid is a 2d array
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+
+    # store the distances to different Food positions
+    foodDistances = []
+
+    if problem.isGoalState(state):
+        return 0
+
+
+    for rowIndex, row in enumerate(foodGrid):
+        for colIndex, col in enumerate(row):
+            if not col:
+                manhattenDistance = abs(position[0] - rowIndex) + abs(position[1] - colIndex)
+                # m((position[0], position[1]), (rowIndex, colIndex), problem.getGameState())
+                foodDistances.append(manhattenDistance)
+
+    return max(foodDistances)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -524,9 +535,8 @@ class ClosestDotSearchAgent(SearchAgent):
         food = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #If we try a breadth first search here it will find the shallowest/nearest dot
+        return search.breadthFirstSearch(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -561,8 +571,14 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         """
         x,y = state
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # iterate through grid and find a state that has food
+        for rowIndex, row in enumerate(self.food):
+            for colIndex, col in enumerate(row):
+                if col:
+                    if state == (rowIndex, colIndex):
+                        return True
+
+
 
 def mazeDistance(point1, point2, gameState):
     """
